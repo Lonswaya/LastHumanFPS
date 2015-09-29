@@ -252,7 +252,7 @@ public class WeaponController : MonoBehaviour {
 		///for recoil and moving the gun after firing
 		/// add recoil calculated when recoil
 
-		wep.localEulerAngles += recoilVec/2;
+		wep.localEulerAngles += recoilVec/3.5f;
 		float moveSpeed = 2; //change the speed we look back
 		if (this.GetComponentInChildren<WeaponController>().aimed) moveSpeed = 8; //if aimed, move the gun quicker
 		//this chunk is used to move the weapon's rotation back to its original state, until it gets too close then locks to it.
@@ -352,14 +352,15 @@ public class WeaponController : MonoBehaviour {
 	void GetAmmo(int i) {
 		this.GetComponent<AudioSource>().clip = pickup;
 		this.GetComponent<AudioSource>().Play();
-		wep.GetComponent<weaponScript>().pocket += i;
+		wep.GetComponent<weaponScript>().pocket += wep.GetComponent<weaponScript>().magcnt * i;
 	}
 	void isDead() {
 		if (!dead) {
 			wep.transform.gameObject.AddComponent<Rigidbody>();
 			MeshCollider m = wep.transform.gameObject.AddComponent<MeshCollider>();
 			m.convex = true;
-			m.sharedMesh = wep.GetComponent<MeshFilter>().mesh;
+			if (wep.GetComponent<MeshFilter>() != null) m.sharedMesh = wep.GetComponent<MeshFilter>().mesh;
+			else m.sharedMesh = wep.FindChild("Model").GetComponent<MeshFilter>().mesh;
 		}
 		
 		dead = true;

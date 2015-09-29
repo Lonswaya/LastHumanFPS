@@ -16,8 +16,8 @@ public class BulletTaker : MonoBehaviour {
 		}
 	//	print(other.name);
 		Vector3 direction = transform.position - other.transform.position;
-		if (dying) this.GetComponent<Rigidbody>().AddForce (direction.normalized * 1500);
-		else this.GetComponent<Rigidbody>().AddForce (direction.normalized * 500);
+		if (dying) this.GetComponent<Rigidbody>().AddForce (direction.normalized * 500);
+		else this.GetComponent<Rigidbody>().AddForce (direction.normalized * 100);
 	}
 	// Update is called once per frame
 	void Update () {

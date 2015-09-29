@@ -9,7 +9,10 @@ public class Enemy : MonoBehaviour {
 	public GameObject ammo;
 	public AudioClip[] shock;
 	public AudioClip[] death;
+
+	private float timeSinceHeadshot;
 	void Start() {
+		timeSinceHeadshot = 30;
 		if (flying) {
 			this.GetComponent<Rigidbody>().useGravity = false;
 			this.GetComponent<Rigidbody>().freezeRotation = false;
@@ -20,8 +23,11 @@ public class Enemy : MonoBehaviour {
 	void takeAllDamage(float f) {
 		health -= f;
 	}
+	void Headshot() {
+		timeSinceHeadshot = 0;
+	}
 	void Update () {
-	
+		timeSinceHeadshot += Time.deltaTime;
 		if (health < 10) {
 			this.GetComponent<Rigidbody>().freezeRotation = false;
 
@@ -44,7 +50,49 @@ public class Enemy : MonoBehaviour {
 			
 
 		}
-		if (dying) { dieTime+= Time.deltaTime;
+		if (dying) { 
+			dieTime+= Time.deltaTime;
+			if (!transform.FindChild("Head").GetComponent<Rigidbody>() && timeSinceHeadshot < 3) {
+				transform.FindChild("Head").gameObject.AddComponent<Rigidbody>();
+				transform.FindChild("Head").GetComponent<Rigidbody>().AddForce(Vector3.up * 100);
+				transform.FindChild("Head").GetComponent<Rigidbody>().AddTorque(new Vector3(Random.Range(-8, 8), Random.Range(-8, 8), Random.Range(-8, 8)));
+			}
+			if (!flying) {
+				if (!transform.FindChild("Body").FindChild("Arm 1").GetComponent<Rigidbody>()) {
+					transform.FindChild("Body").FindChild("Arm 1").gameObject.AddComponent<Rigidbody>();
+					transform.FindChild("Body").FindChild("Arm 1").GetComponent<Rigidbody>().AddForce(Vector3.up * 100);
+					transform.FindChild("Body").FindChild("Arm 1").GetComponent<Rigidbody>().AddTorque(new Vector3(Random.Range(-8, 8), Random.Range(-8, 8), Random.Range(-8, 8)));
+				}
+				if (!transform.FindChild("Body").FindChild("Arm 2").GetComponent<Rigidbody>()) {
+					transform.FindChild("Body").FindChild("Arm 2").gameObject.AddComponent<Rigidbody>();
+					transform.FindChild("Body").FindChild("Arm 2").GetComponent<Rigidbody>().AddForce(Vector3.up * 100);
+					transform.FindChild("Body").FindChild("Arm 2").GetComponent<Rigidbody>().AddTorque(new Vector3(Random.Range(-8, 8), Random.Range(-8, 8), Random.Range(-8, 8)));
+
+				}
+			} else {
+				if (!transform.FindChild("Arm 1").GetComponent<Rigidbody>()) {
+					transform.FindChild("Arm 1").gameObject.AddComponent<Rigidbody>();
+					transform.FindChild("Arm 1").GetComponent<Rigidbody>().AddForce(Vector3.up * 100);
+					transform.FindChild("Arm 1").GetComponent<Rigidbody>().AddTorque(new Vector3(Random.Range(-8, 8), Random.Range(-8, 8), Random.Range(-8, 8)));
+				}
+				if (!transform.FindChild("Arm 2").GetComponent<Rigidbody>()) {
+					transform.FindChild("Arm 2").gameObject.AddComponent<Rigidbody>();
+					transform.FindChild("Arm 2").GetComponent<Rigidbody>().AddForce(Vector3.up * 100);
+					transform.FindChild("Arm 2").GetComponent<Rigidbody>().AddTorque(new Vector3(Random.Range(-8, 8), Random.Range(-8, 8), Random.Range(-8, 8)));
+					
+				}
+				if (!transform.FindChild("Arm 3").GetComponent<Rigidbody>()) {
+					transform.FindChild("Arm 3").gameObject.AddComponent<Rigidbody>();
+					transform.FindChild("Arm 3").GetComponent<Rigidbody>().AddForce(Vector3.up * 100);
+					transform.FindChild("Arm 3").GetComponent<Rigidbody>().AddTorque(new Vector3(Random.Range(-8, 8), Random.Range(-8, 8), Random.Range(-8, 8)));
+				}
+				if (!transform.FindChild("Arm 4").GetComponent<Rigidbody>()) {
+					transform.FindChild("Arm 4").gameObject.AddComponent<Rigidbody>();
+					transform.FindChild("Arm 4").GetComponent<Rigidbody>().AddForce(Vector3.up * 100);
+					transform.FindChild("Arm 4").GetComponent<Rigidbody>().AddTorque(new Vector3(Random.Range(-8, 8), Random.Range(-8, 8), Random.Range(-8, 8)));
+					
+				}
+			}
 			foreach (AudioSource a in this.GetComponentsInChildren<AudioSource>()) {
 				a.pitch = a.pitch - dieTime * Time.deltaTime;
 				a.volume = a.pitch = a.pitch - dieTime * Time.deltaTime;
@@ -56,6 +104,15 @@ public class Enemy : MonoBehaviour {
 		}
 
 		if (Vector3.Distance(GameObject.Find("Player").transform.position, this.transform.position) < 100 && !dying && Time.timeScale > 0) {
+			Vector3 direction = (GameObject.Find ("Player").transform.position - transform.position).normalized;
+			Quaternion lookRotation = Quaternion.LookRotation(direction);
+			if(!flying ) { //face the enemy, different ways to if flying or not
+				transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 1);
+				
+			} else {
+
+			}
+			 	
 			if (!flying)  {
 				this.GetComponent<Rigidbody>().AddForce( (GameObject.Find("Player").transform.position - this.transform.position) * Mathf.Log(Vector3.Distance(GameObject.Find("Player").transform.position, this.transform.position)) / 10);
 			} else {

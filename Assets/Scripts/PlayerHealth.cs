@@ -28,6 +28,7 @@ public class PlayerHealth : MonoBehaviour {
 	}
 	void OnGUI() {
 		if (dyingTime > 5) {
+			Cursor.visible = true;
 			GUIStyle customButton = new GUIStyle();
 			customButton.fontSize = 20;
 			GUI.Box(new Rect(Screen.width * .4f, Screen.height * .35f, Screen.width * .2f, Screen.height * .1f), "<color=red><size=40>GAME OVER</size></color>");
@@ -36,6 +37,10 @@ public class PlayerHealth : MonoBehaviour {
 			}
 			if (GUI.Button(new Rect(Screen.width * .4f, Screen.height * .95f, Screen.width * .1f, Screen.height * .05f),  "Exit Game")) {
 				Application.Quit();
+			}
+		} else {
+			if (Time.timeScale > 0) {
+				Cursor.visible = false;
 			}
 		}
 	}

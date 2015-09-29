@@ -27,6 +27,7 @@ public class Movement : MonoBehaviour {
 		//i = 0;
 		leanIndex = 2;
 		crouchIndex = 2;
+
 	}
 	void isDead() {
 		dead = true;
@@ -63,7 +64,7 @@ public class Movement : MonoBehaviour {
 				r.AddForce(Quaternion.AngleAxis(this.transform.eulerAngles.y, Vector3.up) * Vector3.back * 50 );
 			}
 		}
-		if (!dead && Input.GetKeyDown(kjump) && !jumped) {
+		if ((!dead && Input.GetKeyDown(kjump) && !jumped)) {
 			jumped = true;
 			r.AddForce(Vector3.up * 200);
 			this.BroadcastMessage("FallDown",-3); //for animation
@@ -104,6 +105,7 @@ public class Movement : MonoBehaviour {
 		player.localEulerAngles = new Vector3(player.localEulerAngles.x , player.localEulerAngles.y , (leanIndex - 2)* maxLean);
 
 
+		
 		if (!dead && Input.GetKey(kcrouch)) {
 			//adjust capsule collider
 			if (crouchIndex > 1) {
@@ -164,6 +166,7 @@ public class Movement : MonoBehaviour {
 		if (recoilVec.z > 0) recoilVec = new Vector3(recoilVec.x, recoilVec.y, recoilVec.z - 10 * Time.deltaTime);
 		else recoilVec = new Vector3(recoilVec.x, recoilVec.y, 0);*/
 
+
 	}
 	void OnCollisionEnter(Collision col) {
 		if (col.relativeVelocity.y > 2) {
@@ -174,8 +177,12 @@ public class Movement : MonoBehaviour {
 
 	void OnCollisionStay(Collision col) {
 		//print(this.GetComponent<Rigidbody>().velocity.y);
-
+		jumped = false;
 		if (this.GetComponent<Rigidbody>().velocity.y < .01f) jumped = false; //cannot be 0 cause dumb unity rounding
+	}
+	void OnCollisionExit(Collision col) {
+		jumped = true;
+		//jumped = (this.GetComponent<Rigidbody>().velocity.y > .02f);
 	}
 	void takeRecoil(float f) {
 		//print("Parent " + f);

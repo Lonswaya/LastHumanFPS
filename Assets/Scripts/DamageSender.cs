@@ -6,6 +6,7 @@ public class DamageSender : MonoBehaviour {
 
 	void takeDamage(float f) {
 		this.SendMessageUpwards("takeAllDamage", rate * f);
+		if (rate > 1) this.SendMessageUpwards("Headshot");
 	}
 	void OnParticleCollision(GameObject other) {
 		//print("ow");

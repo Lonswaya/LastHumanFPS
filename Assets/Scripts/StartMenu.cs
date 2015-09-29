@@ -6,6 +6,7 @@ public class StartMenu : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Time.timeScale = 0;
+		Cursor.visible = true;
 	}
 	
 	// Update is called once per frame
@@ -17,9 +18,11 @@ public class StartMenu : MonoBehaviour {
 			Time.timeScale = 1;
 			started = true;
 			//GameObject.Find("GuiText").BroadcastMessage("GamePaused", false);
+			Cursor.visible = false;
 			GameObject.Destroy(this.gameObject);
 		} else {
 			if (!started) {
+				Cursor.visible = true;
 				GUI.Box(new Rect(Screen.width * .15f, Screen.height * .4f, Screen.width * .7f, Screen.height * .2f), 
 			        "Controls: " +
 			        "\n Fire = Mouse1, Aim = Mouse2, Reload = R, Change Weapons = Scroll Wheel, Flashlight = T" +

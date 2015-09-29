@@ -8,6 +8,7 @@ public class weaponScript : MonoBehaviour {
 	public float reload = 3;
 	public float bulletReload = .5f;
 	public float recoil = 1;
+	public float spread = 1;
 	public int bltspershot = 1;
 	public int pocket = 160;
 	public bool dropmag = true;
@@ -20,15 +21,18 @@ public class weaponScript : MonoBehaviour {
 	public AudioClip reloadC;
 	public AudioClip breloadC;
 	public AudioClip gunShot;
+	private bool dead;
 	private bool flash;
 	private float flashIndex;
 	private bool pressed, lastpressed, reloading, pin, gotMag;
 	public int currentMag;
 	private float timeBetween, reloadTime;
 	private float timeSinceShooting;
+	private Vector3 backEndAngle;
 		// Use this for initialization
 	void Start () {
 		//currentMag = magcnt;
+		backEndAngle = transform.FindChild("Back End").localEulerAngles;
 		timeSinceShooting = 30;
 		if (!gotMag) currentMag = magcnt;
 		currentChamber = 1;
@@ -48,50 +52,57 @@ public class weaponScript : MonoBehaviour {
 			if (currentChamber != 0) { 
 				this.GetComponent<AudioSource>().clip = gunShot;
 				this.GetComponent<AudioSource>().Play();
-				timeSinceShooting = 0;
-				for (int i = 0; i < bltspershot; i++) transform.FindChild("Back End").GetComponent<ParticleSystem>().Emit(1);
+
 				transform.FindChild("Front End").GetComponent<ParticleSystem>().Emit(1);
 				transform.FindChild("Muzzle Flash").GetComponent<ParticleSystem>().Emit(1);
-				Vector3 fwd = transform.TransformDirection(Vector3.back);
-				flash = true;
-				flashIndex = 0;
-				//print(fwd);
-				RaycastHit hit;
-				int layerMask = 1 << 9; //bit shift for layer 9
-				layerMask = ~layerMask; //only layer 9
-				//Debug.DrawRay(transform.position, transform.TransformDirection (Vector3.forward) * 100, Color.yellow);
-				if (Physics.Raycast(transform.position, fwd, out hit, Mathf.Infinity, layerMask)) {
-					//print(hit.collider.name + " " + hit.collider.transform.position);
-					if (hit.collider.GetComponent<DamageSender>() != null) {
-						hit.collider.SendMessage("takeDamage",this.caliber);
-						//print(hit.transform.name);
+				timeSinceShooting = 0;
+				for (int i = 0; i < bltspershot; i++) {
+					transform.FindChild("Back End").localEulerAngles += new Vector3(spread * Random.Range(-.01f, .01f), spread * Random.Range(-.01f, .01f), spread * Random.Range(-.0001f, .0001f));
+				//	print(transform.FindChild("Muzzle Flash").localEulerAngles);
+					transform.FindChild("Back End").FindChild("Particles").GetComponent<ParticleSystem>().Emit(1);
+					Vector3 fwd = transform.FindChild("Back End").TransformDirection(Vector3.forward);
+					flash = true;
+					flashIndex = 0;
+					//print(fwd);
+					RaycastHit hit;
+					int layerMask = 1 << 9; //bit shift for layer 9
+					layerMask = ~layerMask; //only layer 9
+					//Debug.DrawRay(transform.position, transform.TransformDirection (Vector3.forward) * 100, Color.yellow);
+					if (Physics.Raycast(transform.FindChild("Back End").transform.position, fwd, out hit, Mathf.Infinity, layerMask)) {
+						//print(hit.collider.name + " " + hit.collider.transform.position);
+						if (hit.collider.GetComponent<DamageSender>() != null) {
+							hit.collider.SendMessage("takeDamage",this.caliber);
+							//print(hit.transform.name);
+						}
+						if (hit.transform.GetComponent<Rigidbody>() != null) {
+							hit.transform.GetComponent<Rigidbody>().AddForce(30 * (hit.point - transform.position)/hit.distance);
+						}
+						Debug.DrawRay(transform.position,transform.FindChild("Back End").TransformDirection (Vector3.forward) * hit.distance, Color.yellow);
+						Quaternion hitRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+						GameObject g = (GameObject)Instantiate(bulletHole, hit.point, hitRotation);
+
+						g.transform.position += .01f * (g.transform.position - hit.collider.transform.position); //so we don't get rendering issues, clipping
+						//g.transform.localScale = new Vector3(1/hit.transform.lossyScale.x, 1/hit.transform.lossyScale.y, 1/hit.transform.lossyScale.z);
+						g.transform.parent = hit.collider.transform;
+						//g.layer = 10;
+						g.GetComponent<AudioSource>().clip = ric[Random.Range(0, ric.Length)];
+						g.GetComponent<AudioSource>().Play();
+					} else {
+						//print("Nothing");
 					}
-					if (hit.transform.GetComponent<Rigidbody>() != null) {
-						hit.transform.GetComponent<Rigidbody>().AddForce(30 * (hit.point - transform.position)/hit.distance);
-					}
-					Debug.DrawRay(transform.position, transform.FindChild("Back End").TransformDirection (Vector3.forward) * hit.distance, Color.yellow);
-					Quaternion hitRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-					GameObject g = (GameObject)Instantiate(bulletHole, hit.point, hitRotation);
-					g.GetComponent<AudioSource>().clip = ric[Random.Range(0, ric.Length)];
-					
-					//g.transform.localScale = new Vector3(1/hit.transform.lossyScale.x, 1/hit.transform.lossyScale.y, 1/hit.transform.lossyScale.z);
-					g.transform.parent = hit.collider.transform;
-					g.layer = 10;
-					g.GetComponent<AudioSource>().Play();
-				} else {
-					//print("Nothing");
 				}
 				this.SendMessageUpwards("takeRecoil",recoil);
 				GameObject.Find("Player").SendMessage("takeRecoil",recoil);
 				currentChamber--;
 				cock(); //slide action
+				transform.FindChild("Back End").localEulerAngles = backEndAngle;
 			} 
 		} else {
 			//print("click");
 		}
 	}
 	void Reload() {
-		if (!reloading){
+		if (!reloading && !dead && currentMag < magcnt && pocket > 0){
 			reloading = true;
 			this.transform.FindChild("Front End").GetComponent<AudioSource>().clip = breloadC;
 			this.transform.FindChild("Front End").GetComponent<AudioSource>().Play();
@@ -142,15 +153,23 @@ public class weaponScript : MonoBehaviour {
 
 			}
 		} 
-		if (reloading) {
-			pocket += currentMag;
-			currentMag = 0;
+		if (reloading && !dead) {
+			if (dropmag) {
+				pocket += currentMag;
+				currentMag = 0;
+			}
 			
 			reloadTime += Time.deltaTime;
 			if (reloadTime > reload) {
-				if (magcnt <= pocket) {
-					pocket -= magcnt;
-					currentMag = magcnt;
+				if ((dropmag?magcnt:1) <= pocket) {
+
+					if (dropmag) {
+						pocket -= magcnt;
+						currentMag = magcnt;
+					} else {
+						currentMag++;
+						pocket--;
+					}
 				} else {
 					currentMag = pocket;
 					pocket = 0;
@@ -158,7 +177,7 @@ public class weaponScript : MonoBehaviour {
 				if (currentChamber == 0) cock();
 				this.transform.FindChild("Front End").GetComponent<AudioSource>().clip = reloadC;
 				this.transform.FindChild("Front End").GetComponent<AudioSource>().Play();
-				reloading = false;
+				if (dropmag || (currentMag == magcnt || pocket == 0)) reloading = false;
 				//print("reloaded");
 				reloadTime = 0;
 
@@ -180,6 +199,9 @@ public class weaponScript : MonoBehaviour {
 	void OnTriggerExit(Collider col) {
 		//print("exit");
 		this.SendMessageUpwards("againstWalls", false);
+	}
+	void isDead() {
+		dead = true;
 	}
 
 }

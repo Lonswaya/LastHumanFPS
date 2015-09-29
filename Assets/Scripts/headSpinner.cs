@@ -14,11 +14,9 @@ public class headSpinner : MonoBehaviour {
 		Vector3 direction = (GameObject.Find ("Player").transform.position - transform.position).normalized;
 		Quaternion lookRotation = Quaternion.LookRotation(direction);
 		if(this.GetComponentInParent<Enemy>().flying ) {
-			transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 100);
+			transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 100); //keep light focused on player
 
-		} else {
-			transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 1);
-		}
+		} 
 
 
 		if (transform.GetComponentInParent<Enemy>().dying) {
