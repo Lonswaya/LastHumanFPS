@@ -52,47 +52,47 @@ public class Enemy : MonoBehaviour {
 		}
 		if (dying) { 
 			dieTime+= Time.deltaTime;
-			if (!transform.FindChild("Head").GetComponent<Rigidbody>() && timeSinceHeadshot < 3) {
+			if (transform.FindChild("Head") && !transform.FindChild("Head").GetComponent<Rigidbody>() && timeSinceHeadshot < 3) {
 				transform.FindChild("Head").gameObject.AddComponent<Rigidbody>();
 				transform.FindChild("Head").GetComponent<Rigidbody>().AddForce(Vector3.up * 100);
 				transform.FindChild("Head").GetComponent<Rigidbody>().AddTorque(new Vector3(Random.Range(-8, 8), Random.Range(-8, 8), Random.Range(-8, 8)));
-			}
+			}/*
 			if (!flying) {
-				if (!transform.FindChild("Body").FindChild("Arm 1").GetComponent<Rigidbody>()) {
+				if (transform.FindChild("Body") && !transform.FindChild("Body").FindChild("Arm 1").GetComponent<Rigidbody>()) {
 					transform.FindChild("Body").FindChild("Arm 1").gameObject.AddComponent<Rigidbody>();
 					transform.FindChild("Body").FindChild("Arm 1").GetComponent<Rigidbody>().AddForce(Vector3.up * 100);
 					transform.FindChild("Body").FindChild("Arm 1").GetComponent<Rigidbody>().AddTorque(new Vector3(Random.Range(-8, 8), Random.Range(-8, 8), Random.Range(-8, 8)));
 				}
-				if (!transform.FindChild("Body").FindChild("Arm 2").GetComponent<Rigidbody>()) {
+				if (transform.FindChild("Body") && !transform.FindChild("Body").FindChild("Arm 2").GetComponent<Rigidbody>()) {
 					transform.FindChild("Body").FindChild("Arm 2").gameObject.AddComponent<Rigidbody>();
 					transform.FindChild("Body").FindChild("Arm 2").GetComponent<Rigidbody>().AddForce(Vector3.up * 100);
 					transform.FindChild("Body").FindChild("Arm 2").GetComponent<Rigidbody>().AddTorque(new Vector3(Random.Range(-8, 8), Random.Range(-8, 8), Random.Range(-8, 8)));
 
 				}
 			} else {
-				if (!transform.FindChild("Arm 1").GetComponent<Rigidbody>()) {
+				if (transform.FindChild("Arm 1") && !transform.FindChild("Arm 1").GetComponent<Rigidbody>()) {
 					transform.FindChild("Arm 1").gameObject.AddComponent<Rigidbody>();
 					transform.FindChild("Arm 1").GetComponent<Rigidbody>().AddForce(Vector3.up * 100);
 					transform.FindChild("Arm 1").GetComponent<Rigidbody>().AddTorque(new Vector3(Random.Range(-8, 8), Random.Range(-8, 8), Random.Range(-8, 8)));
 				}
-				if (!transform.FindChild("Arm 2").GetComponent<Rigidbody>()) {
+				if (transform.FindChild("Arm 2") && !transform.FindChild("Arm 2").GetComponent<Rigidbody>()) {
 					transform.FindChild("Arm 2").gameObject.AddComponent<Rigidbody>();
 					transform.FindChild("Arm 2").GetComponent<Rigidbody>().AddForce(Vector3.up * 100);
 					transform.FindChild("Arm 2").GetComponent<Rigidbody>().AddTorque(new Vector3(Random.Range(-8, 8), Random.Range(-8, 8), Random.Range(-8, 8)));
 					
 				}
-				if (!transform.FindChild("Arm 3").GetComponent<Rigidbody>()) {
+				if (transform.FindChild("Arm 3") && !transform.FindChild("Arm 3").GetComponent<Rigidbody>()) {
 					transform.FindChild("Arm 3").gameObject.AddComponent<Rigidbody>();
 					transform.FindChild("Arm 3").GetComponent<Rigidbody>().AddForce(Vector3.up * 100);
 					transform.FindChild("Arm 3").GetComponent<Rigidbody>().AddTorque(new Vector3(Random.Range(-8, 8), Random.Range(-8, 8), Random.Range(-8, 8)));
 				}
-				if (!transform.FindChild("Arm 4").GetComponent<Rigidbody>()) {
+				if (transform.FindChild("Arm 4") && !transform.FindChild("Arm 4").GetComponent<Rigidbody>()) {
 					transform.FindChild("Arm 4").gameObject.AddComponent<Rigidbody>();
 					transform.FindChild("Arm 4").GetComponent<Rigidbody>().AddForce(Vector3.up * 100);
 					transform.FindChild("Arm 4").GetComponent<Rigidbody>().AddTorque(new Vector3(Random.Range(-8, 8), Random.Range(-8, 8), Random.Range(-8, 8)));
 					
 				}
-			}
+			}*/
 			foreach (AudioSource a in this.GetComponentsInChildren<AudioSource>()) {
 				a.pitch = a.pitch - dieTime * Time.deltaTime;
 				a.volume = a.pitch = a.pitch - dieTime * Time.deltaTime;

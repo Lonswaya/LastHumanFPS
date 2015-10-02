@@ -1,21 +1,16 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\weaponScript.cs">
     <Files>
-      <File FileName="Assets\Scripts\Movement.cs" Line="184" Column="16" />
-      <File FileName="Assets\Scripts\weaponScript.cs" Line="105" Column="63" />
-      <File FileName="Assets\Scripts\WeaponController.cs" Line="255" Column="41" />
-      <File FileName="Assets\Scripts\BulletTaker.cs" Line="20" Column="74" />
+      <File FileName="Assets\Scripts\weaponScript.cs" Line="78" Column="61" />
+      <File FileName="Assets\Scripts\Movement.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\WeaponController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\BulletTaker.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\FlashlightController.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\EnemySpawner.cs" Line="15" Column="13" />
+      <File FileName="Assets\Scripts\EnemySpawner.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\DamageSender.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\PlayerHealth.cs" Line="30" Column="23" />
-      <File FileName="Assets\Scripts\headSpinner.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Enemy.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\AmmoPack.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\StartMenu.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\PauseScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Alive.cs" Line="20" Column="47" />
+      <File FileName="Assets\Scripts\headSpinner.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

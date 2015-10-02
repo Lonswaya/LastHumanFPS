@@ -26,11 +26,11 @@ public class WeaponController : MonoBehaviour {
 	private float fallAmt;
 	private float recoilPower;
 	private int changingWeps, currentWepIndex;
-	private bool againstWall, anyAiming;
+	private bool againstWall;
 	private Vector3 recoilVec, desiredRotation, lastFrom, lastTo;
 	private bool unholstering;
 	private bool moveToRandom, step, aimToWall, wallToAim;
-	private float stepTime;
+	private float stepTime, zoomIndex;
 	// Use this for initialization
 	void Start () {
 		//againstWall = true;
@@ -61,6 +61,7 @@ public class WeaponController : MonoBehaviour {
 		//restLocation.transform.position = wep.transform.position;
 		offset = wep.GetComponent<weaponScript>().offset;
 		adsIndex = 0;
+		zoomIndex = 60;
 	}
 	
 	// Update is called once per frame
@@ -98,16 +99,16 @@ public class WeaponController : MonoBehaviour {
 			desiredRotation = wallLocation.localEulerAngles;
 			if (aimed) {
 				lastFrom = adsLocation.position;
-				anyAiming = true;
+			//	anyAiming = true;
 			} else {
-				anyAiming = false;
+				//anyAiming = false;
 				lastFrom = restLocation.position;
 			} 
 			//print(wallLocation.localEulerAngles);
 			//lastFrom = wallLocation.position;
 
 		} else if (holstered) {
-			anyAiming = false;
+		//	anyAiming = false;
 			lastFrom = holsteredLocation.position;
 			//print("lastfrom is holst");
 			desiredRotation = holsteredLocation.localEulerAngles;
@@ -115,7 +116,7 @@ public class WeaponController : MonoBehaviour {
 		}
 		else if (aimed) {
 
-			anyAiming = true;
+		//	anyAiming = true;
 			lastFrom = adsLocation.position;
 			//print("lastfrom is ads");
 			desiredRotation = adsLocation.localEulerAngles;
@@ -143,11 +144,21 @@ public class WeaponController : MonoBehaviour {
 		else*/ 
 		moveTo.position = restLocation.position + ((lastFrom - restLocation.position) * adsIndex); //move back from whatever
 
-		if (anyAiming || adsIndex < 0) {
-			this.GetComponentInParent<Camera>().fieldOfView = 45 + ((1-adsIndex) * 15);
-			GameObject.Find("WepCamera").GetComponent<Camera>().fieldOfView = 45 + ((1-adsIndex) * 15);
-			GameObject.Find("ParticleCamera").GetComponent<Camera>().fieldOfView = 45 + ((1-adsIndex) * 15);
+		if (aimed) {
+			if (zoomIndex > 45) {
+				zoomIndex -= Time.deltaTime * 30;
+			} else {
+				zoomIndex =  45;
+			}
+		} else {
+
+			if (zoomIndex < 60) {
+				zoomIndex += Time.deltaTime * 30;
+			} else {
+				zoomIndex =  60;
+			}
 		}
+
 
 
 			 
@@ -308,7 +319,9 @@ public class WeaponController : MonoBehaviour {
 		//print(recoilPower);
 		if (recoilPower > 0) recoilPower -= 20 *  Time.deltaTime;
 		else recoilPower = 0;
-
+		this.GetComponentInParent<Camera>().fieldOfView = (zoomIndex);
+		GameObject.Find("WepCamera").GetComponent<Camera>().fieldOfView = (zoomIndex);
+		GameObject.Find("ParticleCamera").GetComponent<Camera>().fieldOfView = (zoomIndex);
 	}
 	void takeRecoil(float force) {
 
@@ -320,7 +333,7 @@ public class WeaponController : MonoBehaviour {
 
 		wep.position += Random.Range(force * .01f, force * .02f) * (frontEnd.position - backEnd.position) ; //recoil
 		force = recoilPower;
-		if (aimed) recoilVec = new Vector3(Random.Range (force * .1f, force * 1), 0, Random.Range (force * -.2f, force * .8f)); //recoil turn if aiming down sight
+		if (aimed) recoilVec = new Vector3(Random.Range (force * .1f, force * 1.3f), 0, Random.Range (force * -.2f, force * .8f)); //recoil turn if aiming down sight
 		else if (unholstering) recoilVec = new Vector3(Random.Range (force * .1f, force * 1f), 0, Random.Range (force * -1.5f, force * 1.5f)); //recoil turn if firing after holstering
 		else recoilVec = new Vector3(Random.Range (force * .1f, force * 1), 0, Random.Range (force * -1.1f, force * 1.1f )); //recoil otherwise
 
@@ -344,7 +357,7 @@ public class WeaponController : MonoBehaviour {
 	}
 	void againstWalls(bool c) {
 		//print("exit");
-		againstWall = c;
+		//againstWall = c;
 	}
 	void FallDown(float f) {
 		fallAmt = f;

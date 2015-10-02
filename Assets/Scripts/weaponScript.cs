@@ -29,6 +29,7 @@ public class weaponScript : MonoBehaviour {
 	private float timeBetween, reloadTime;
 	private float timeSinceShooting;
 	private Vector3 backEndAngle;
+	private Vector3 lastSmoke;
 		// Use this for initialization
 	void Start () {
 		//currentMag = magcnt;
@@ -54,9 +55,11 @@ public class weaponScript : MonoBehaviour {
 				this.GetComponent<AudioSource>().Play();
 
 				transform.FindChild("Front End").GetComponent<ParticleSystem>().Emit(1);
-				transform.FindChild("Muzzle Flash").GetComponent<ParticleSystem>().Emit(1);
+				transform.FindChild("Muzzle Flash").GetComponent<ParticleSystem>().Emit(6);
 				timeSinceShooting = 0;
 				for (int i = 0; i < bltspershot; i++) {
+					ParticleSystem p = transform.FindChild("Smoke").GetComponent<ParticleSystem>();
+					if (p.startLifetime < 8) p.startLifetime += .7f;
 					transform.FindChild("Back End").localEulerAngles += new Vector3(spread * Random.Range(-.01f, .01f), spread * Random.Range(-.01f, .01f), spread * Random.Range(-.0001f, .0001f));
 				//	print(transform.FindChild("Muzzle Flash").localEulerAngles);
 					transform.FindChild("Back End").FindChild("Particles").GetComponent<ParticleSystem>().Emit(1);
@@ -70,6 +73,7 @@ public class weaponScript : MonoBehaviour {
 					//Debug.DrawRay(transform.position, transform.TransformDirection (Vector3.forward) * 100, Color.yellow);
 					if (Physics.Raycast(transform.FindChild("Back End").transform.position, fwd, out hit, Mathf.Infinity, layerMask)) {
 						//print(hit.collider.name + " " + hit.collider.transform.position);
+
 						if (hit.collider.GetComponent<DamageSender>() != null) {
 							hit.collider.SendMessage("takeDamage",this.caliber);
 							//print(hit.transform.name);
@@ -118,7 +122,14 @@ public class weaponScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		timeSinceShooting += Time.deltaTime;
-		
+		ParticleSystem p = transform.FindChild("Smoke").GetComponent<ParticleSystem>();
+		p.emissionRate = 10 + 10*Vector3.Magnitude(transform.FindChild("Smoke").position - lastSmoke);
+		if (p.startLifetime > 0) {
+			p.startLifetime -= 2 * Time.deltaTime;
+		} else {
+			p.startLifetime = 0;
+		}
+		lastSmoke = transform.FindChild("Smoke").transform.position;
 		//this.GetComponentInChildren<TrailRenderer>().endWidth = .0001f / timeSinceShooting;
 		//this.GetComponentInChildren<TrailRenderer>().startWidth = .003f / timeSinceShooting;
 
@@ -194,11 +205,11 @@ public class weaponScript : MonoBehaviour {
 	}
 	void OnTriggerEnter(Collider col) {
 		//print("enter");
-		this.SendMessageUpwards("againstWalls", true);
+		if (col.GetComponentInParent<Enemy>() == null) this.SendMessageUpwards("againstWalls", true);
 	}
 	void OnTriggerExit(Collider col) {
 		//print("exit");
-		this.SendMessageUpwards("againstWalls", false);
+		if (col.GetComponentInParent<Enemy>() == null) this.SendMessageUpwards("againstWalls", false);
 	}
 	void isDead() {
 		dead = true;

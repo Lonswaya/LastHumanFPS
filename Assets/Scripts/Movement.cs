@@ -186,6 +186,6 @@ public class Movement : MonoBehaviour {
 	}
 	void takeRecoil(float f) {
 		//print("Parent " + f);
-		recoilVec += new Vector3(Random.Range(f * .1f, f * .5f), 0, /*Random.Range (f * -1.5f, f * 1.5f)*/0);
+		recoilVec += new Vector3(Random.Range(f * .1f, f * .4f), 0, /*Random.Range (f * -1.5f, f * 1.5f)*/0);
 	}
 }

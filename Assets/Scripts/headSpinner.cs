@@ -13,13 +13,13 @@ public class headSpinner : MonoBehaviour {
 		//this.transform.eulerAngles = new Vector3(0, transform.eulerAngles.y + 200 * Time.deltaTime, 0);
 		Vector3 direction = (GameObject.Find ("Player").transform.position - transform.position).normalized;
 		Quaternion lookRotation = Quaternion.LookRotation(direction);
-		if(this.GetComponentInParent<Enemy>().flying ) {
+		if(this.GetComponentInParent<Enemy>() && this.GetComponentInParent<Enemy>().flying ) {
 			transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 100); //keep light focused on player
 
 		} 
 
 
-		if (transform.GetComponentInParent<Enemy>().dying) {
+		if (transform.GetComponent<DamageSender>().alone || (transform.GetComponentInParent<Enemy>() && transform.GetComponentInParent<Enemy>().dying)) {
 			foreach (Light l in this.GetComponentsInChildren<Light>()) {
 				//print(l.transform.name);
 				l.range -= 100 * Time.deltaTime;
