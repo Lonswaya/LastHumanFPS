@@ -15,13 +15,15 @@ public class EnemySpawner : MonoBehaviour {
 	private int lastSpawnTime;
 	// Use this for initialization
 	void Start () {
-	
+		index = spawnRate * .9f;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		spawnRate -= Time.deltaTime * .002f * spawnRate;
 		index += Time.deltaTime ;
-		if (((int)index) % spawnRate == 0 && spawning && !pause && (int)index != lastSpawnTime) {
+		//print(index + " " + spawnRate);
+		if (((int)index) % (int)spawnRate == 0 && spawning && !pause && (int)index != lastSpawnTime) {
 			lastSpawnTime = (int)index;
 			GameObject.Instantiate(airSpawn?airEnemy:floorEnemy, this.transform.position, new Quaternion());
 		}

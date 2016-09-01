@@ -16,9 +16,15 @@ public class PlayerHealth : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (currentHealth <= 0) {
+			if (!dying) {
+				this.GetComponent<Rigidbody>().freezeRotation = false;
+				this.GetComponent<Rigidbody>().angularDrag = 2;
+				this.GetComponent<Rigidbody>().AddTorque(new Vector3(40, 0, 0));
+				this.GetComponent<CapsuleCollider>().material.dynamicFriction = .5f;
+			}
 			this.BroadcastMessage("isDead");
 			dying = true;
-			this.GetComponent<Rigidbody>().freezeRotation = false;
+
 		}
 		if (dying) {
 			dyingTime += Time.deltaTime;

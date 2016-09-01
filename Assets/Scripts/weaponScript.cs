@@ -59,7 +59,7 @@ public class weaponScript : MonoBehaviour {
 				timeSinceShooting = 0;
 				for (int i = 0; i < bltspershot; i++) {
 					ParticleSystem p = transform.FindChild("Smoke").GetComponent<ParticleSystem>();
-					if (p.startLifetime < 8) p.startLifetime += .7f;
+					if (p.startLifetime < 2) p.startLifetime += .3f;
 					transform.FindChild("Back End").localEulerAngles += new Vector3(spread * Random.Range(-.01f, .01f), spread * Random.Range(-.01f, .01f), spread * Random.Range(-.0001f, .0001f));
 				//	print(transform.FindChild("Muzzle Flash").localEulerAngles);
 					transform.FindChild("Back End").FindChild("Particles").GetComponent<ParticleSystem>().Emit(1);

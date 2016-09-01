@@ -32,8 +32,24 @@ public class Movement : MonoBehaviour {
 	void isDead() {
 		dead = true;
 	}
+	void onGui() {
+		//print("Guing");
+	}
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+	{
+		//print(Cursor.lockState);
+		print(Input.GetAxis("Fire1"));
+			if (Time.timeScale > 0 && !dead) {
+				if (Input.GetKey(KeyCode.Escape)) {
+					Cursor.lockState = CursorLockMode.None;
+				}
+				else {
+					Cursor.lockState = CursorLockMode.Locked;
+				}
+			} else {
+				Cursor.lockState = CursorLockMode.None;
+			}
 
 		Rigidbody r = this.GetComponent<Rigidbody>();
 		Vector2 transVec = new Vector2(r.velocity.x, r.velocity.z);

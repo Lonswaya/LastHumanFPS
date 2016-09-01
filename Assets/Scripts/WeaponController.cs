@@ -164,27 +164,29 @@ public class WeaponController : MonoBehaviour {
 			 
 			//if (againstWall) moveTo.position = wallLocation.position + ((holsteredLocation.position - restLocation.position) * adsIndex);
 			//ParticleSystem part = wep.GetComponentInChildren<ParticleSystem>();
-		if (Input.mouseScrollDelta.y > 0 && currentWepIndex < weps.Length - 1 && !holstered) {
-			holstered = true;
-			changingWeps = 1;
-		} 
-		if (Input.mouseScrollDelta.y < 0 && currentWepIndex > 0 && !holstered) {
-			holstered = true;
-			changingWeps = -1;
-		}
-		if (Input.GetKeyDown(kreload)) wep.SendMessage("Reload");
-		if (!holstered) {
-			if (Input.GetMouseButton(0)  && !againstWall && !dead) {
-				wep.SendMessage("mDown");
-
-					//GameObject spawnedBullet = (GameObject)GameObject.Instantiate(bullet, backEnd.position, Quaternion.Euler(new Vector3(0, 0, 90)));
-					//spawnedBullet.GetComponent<Rigidbody>().AddForce((backEnd.position - frontEnd.position) * 50);
-					//print(spawnedBullet.transform.position);
-			} else {
-
-				wep.SendMessage("mUp");
+		if (!dead) {
+			if (Input.mouseScrollDelta.y > 0 && currentWepIndex < weps.Length - 1 && !holstered) {
+				holstered = true;
+				changingWeps = 1;
+			} 
+			if (Input.mouseScrollDelta.y < 0 && currentWepIndex > 0 && !holstered) {
+				holstered = true;
+				changingWeps = -1;
 			}
+			if (Input.GetKeyDown(kreload)) wep.SendMessage("Reload");
+			if (!holstered) {
+				if (Input.GetMouseButton(0)  && !againstWall && !dead) {
+					wep.SendMessage("mDown");
 
+						//GameObject spawnedBullet = (GameObject)GameObject.Instantiate(bullet, backEnd.position, Quaternion.Euler(new Vector3(0, 0, 90)));
+						//spawnedBullet.GetComponent<Rigidbody>().AddForce((backEnd.position - frontEnd.position) * 50);
+						//print(spawnedBullet.transform.position);
+				} else {
+
+					wep.SendMessage("mUp");
+				}
+
+			}
 		}
 
 		//final addition, movement from left to right
